@@ -316,7 +316,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = /opt/MonkeyDev/Tools/pack.sh;
+			shellScript = "bash ${SRCROOT}/bluedXHook/Scripts/pack-compat.sh";
 		};
 		090920CF309442420005A0D9 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
