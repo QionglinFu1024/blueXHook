@@ -1,0 +1,726 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		090920E3309442420005A0D9 /* libbluedXHookDylib.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 090920E2309442420005A0D9 /* libbluedXHookDylib.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		090920E8309442420005A0D9 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090920E7309442420005A0D9 /* JavaScriptCore.framework */; };
+		090920EA309442420005A0D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090920E9309442420005A0D9 /* Foundation.framework */; };
+		090920EC309442420005A0D9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090920EB309442420005A0D9 /* UIKit.framework */; };
+		090920F1309442420005A0D9 /* bluedXHookDylib.mm in Sources */ = {isa = PBXBuildFile; fileRef = 090920F0309442420005A0D9 /* bluedXHookDylib.mm */; };
+		090920F5309442420005A0D9 /* bluedXHookDylib.h in Headers */ = {isa = PBXBuildFile; fileRef = 090920F4309442420005A0D9 /* bluedXHookDylib.h */; };
+		090920F7309442420005A0D9 /* bluedXHookDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 090920F6309442420005A0D9 /* bluedXHookDylib.m */; };
+		090920FA309442420005A0D9 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 090920F9309442420005A0D9 /* fishhook.c */; };
+		090920FF309442420005A0D9 /* LLDBTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 090920FE309442420005A0D9 /* LLDBTools.mm */; };
+		09092103309442420005A0D9 /* MDMethodTrace.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09092102309442420005A0D9 /* MDMethodTrace.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		090920E4309442420005A0D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 090920C6309442420005A0D9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 090920E1309442420005A0D9;
+			remoteInfo = bluedXHookDylib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		090920CE309442420005A0D9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				090920E3309442420005A0D9 /* libbluedXHookDylib.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		090920D1309442420005A0D9 /* bluedXHook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bluedXHook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		090920E2309442420005A0D9 /* libbluedXHookDylib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libbluedXHookDylib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		090920E7309442420005A0D9 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		090920E9309442420005A0D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		090920EB309442420005A0D9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		090920EF309442420005A0D9 /* bluedXHookDylib.xm */ = {isa = PBXFileReference; lastKnownFileType = text; path = bluedXHookDylib.xm; sourceTree = "<group>"; };
+		090920F0309442420005A0D9 /* bluedXHookDylib.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = bluedXHookDylib.mm; sourceTree = "<group>"; };
+		090920F3309442420005A0D9 /* bluedXHookDylib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "bluedXHookDylib-Prefix.pch"; path = "../bluedXHookDylib-Prefix.pch"; sourceTree = "<group>"; };
+		090920F4309442420005A0D9 /* bluedXHookDylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bluedXHookDylib.h; sourceTree = "<group>"; };
+		090920F6309442420005A0D9 /* bluedXHookDylib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bluedXHookDylib.m; sourceTree = "<group>"; };
+		090920F9309442420005A0D9 /* fishhook.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fishhook.c; sourceTree = "<group>"; };
+		090920FB309442420005A0D9 /* fishhook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
+		090920FD309442420005A0D9 /* LLDBTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LLDBTools.h; sourceTree = "<group>"; };
+		090920FE309442420005A0D9 /* LLDBTools.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LLDBTools.mm; sourceTree = "<group>"; };
+		09092101309442420005A0D9 /* MDMethodTrace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDMethodTrace.h; sourceTree = "<group>"; };
+		09092102309442420005A0D9 /* MDMethodTrace.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MDMethodTrace.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		09092104309442420005A0D9 /* Exceptions for "bluedXHook" folder in "bluedXHook" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				icon.png,
+				Info.plist,
+				"Scripts/quick-resign.sh",
+				"TargetApp/put ipa or app here",
+			);
+			target = 090920D0309442420005A0D9 /* bluedXHook */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		090920D3309442420005A0D9 /* bluedXHook */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				09092104309442420005A0D9 /* Exceptions for "bluedXHook" folder in "bluedXHook" target */,
+			);
+			path = bluedXHook;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		090920CB309442420005A0D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		090920DF309442420005A0D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				090920E8309442420005A0D9 /* JavaScriptCore.framework in Frameworks */,
+				090920EC309442420005A0D9 /* UIKit.framework in Frameworks */,
+				090920EA309442420005A0D9 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		090920C5309442420005A0D9 = {
+			isa = PBXGroup;
+			children = (
+				090920D3309442420005A0D9 /* bluedXHook */,
+				090920ED309442420005A0D9 /* bluedXHookDylib */,
+				090920E6309442420005A0D9 /* Frameworks */,
+				090920D2309442420005A0D9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		090920D2309442420005A0D9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				090920D1309442420005A0D9 /* bluedXHook.app */,
+				090920E2309442420005A0D9 /* libbluedXHookDylib.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		090920E6309442420005A0D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				090920E7309442420005A0D9 /* JavaScriptCore.framework */,
+				090920E9309442420005A0D9 /* Foundation.framework */,
+				090920EB309442420005A0D9 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		090920ED309442420005A0D9 /* bluedXHookDylib */ = {
+			isa = PBXGroup;
+			children = (
+				090920F4309442420005A0D9 /* bluedXHookDylib.h */,
+				090920F6309442420005A0D9 /* bluedXHookDylib.m */,
+				090920EE309442420005A0D9 /* Logos */,
+				090920F8309442420005A0D9 /* fishhook */,
+				090920FC309442420005A0D9 /* Tools */,
+				09092100309442420005A0D9 /* Trace */,
+				090920F2309442420005A0D9 /* Supporting Files */,
+			);
+			path = bluedXHookDylib;
+			sourceTree = "<group>";
+		};
+		090920EE309442420005A0D9 /* Logos */ = {
+			isa = PBXGroup;
+			children = (
+				090920EF309442420005A0D9 /* bluedXHookDylib.xm */,
+				090920F0309442420005A0D9 /* bluedXHookDylib.mm */,
+			);
+			path = Logos;
+			sourceTree = "<group>";
+		};
+		090920F2309442420005A0D9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				090920F3309442420005A0D9 /* bluedXHookDylib-Prefix.pch */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		090920F8309442420005A0D9 /* fishhook */ = {
+			isa = PBXGroup;
+			children = (
+				090920F9309442420005A0D9 /* fishhook.c */,
+				090920FB309442420005A0D9 /* fishhook.h */,
+			);
+			path = fishhook;
+			sourceTree = "<group>";
+		};
+		090920FC309442420005A0D9 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				090920FD309442420005A0D9 /* LLDBTools.h */,
+				090920FE309442420005A0D9 /* LLDBTools.mm */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		09092100309442420005A0D9 /* Trace */ = {
+			isa = PBXGroup;
+			children = (
+				09092101309442420005A0D9 /* MDMethodTrace.h */,
+				09092102309442420005A0D9 /* MDMethodTrace.mm */,
+			);
+			path = Trace;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		090920E0309442420005A0D9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				090920F5309442420005A0D9 /* bluedXHookDylib.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		090920D0309442420005A0D9 /* bluedXHook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09092108309442420005A0D9 /* Build configuration list for PBXNativeTarget "bluedXHook" */;
+			buildPhases = (
+				090920CA309442420005A0D9 /* Sources */,
+				090920CB309442420005A0D9 /* Frameworks */,
+				090920CC309442420005A0D9 /* ShellScript */,
+				090920CD309442420005A0D9 /* Resources */,
+				090920CE309442420005A0D9 /* CopyFiles */,
+				090920CF309442420005A0D9 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				090920E5309442420005A0D9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				090920D3309442420005A0D9 /* bluedXHook */,
+			);
+			name = bluedXHook;
+			packageProductDependencies = (
+			);
+			productName = bluedXHook;
+			productReference = 090920D1309442420005A0D9 /* bluedXHook.app */;
+			productType = "com.apple.product-type.application";
+		};
+		090920E1309442420005A0D9 /* bluedXHookDylib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09092105309442420005A0D9 /* Build configuration list for PBXNativeTarget "bluedXHookDylib" */;
+			buildPhases = (
+				090920DD309442420005A0D9 /* ShellScript */,
+				090920DE309442420005A0D9 /* Sources */,
+				090920DF309442420005A0D9 /* Frameworks */,
+				090920E0309442420005A0D9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = bluedXHookDylib;
+			packageProductDependencies = (
+			);
+			productName = bluedXHookDylib;
+			productReference = 090920E2309442420005A0D9 /* libbluedXHookDylib.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		090920C6309442420005A0D9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					090920D0309442420005A0D9 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					090920E1309442420005A0D9 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = 090920C9309442420005A0D9 /* Build configuration list for PBXProject "bluedXHook" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 090920C5309442420005A0D9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 090920D2309442420005A0D9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				090920D0309442420005A0D9 /* bluedXHook */,
+				090920E1309442420005A0D9 /* bluedXHookDylib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		090920CD309442420005A0D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		090920CC309442420005A0D9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = /opt/MonkeyDev/Tools/pack.sh;
+		};
+		090920CF309442420005A0D9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "/opt/MonkeyDev/Tools/pack.sh codesign";
+		};
+		090920DD309442420005A0D9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "/opt/MonkeyDev/bin/md --xcbp-logos";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		090920CA309442420005A0D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		090920DE309442420005A0D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09092103309442420005A0D9 /* MDMethodTrace.mm in Sources */,
+				090920F1309442420005A0D9 /* bluedXHookDylib.mm in Sources */,
+				090920FA309442420005A0D9 /* fishhook.c in Sources */,
+				090920F7309442420005A0D9 /* bluedXHookDylib.m in Sources */,
+				090920FF309442420005A0D9 /* LLDBTools.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		090920E5309442420005A0D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 090920E1309442420005A0D9 /* bluedXHookDylib */;
+			targetProxy = 090920E4309442420005A0D9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		09092106309442420005A0D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bluedXHookDylib/bluedXHookDylib-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				INSTALL_PATH = "@executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MonkeyDevPath = /opt/MonkeyDev;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DTHEOS_INSTANCE_NAME=\"\\\"bluedXHookDylib\\\"\"",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Debug;
+		};
+		09092107309442420005A0D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bluedXHookDylib/bluedXHookDylib-Prefix.pch";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				INSTALL_PATH = "@executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MonkeyDevPath = /opt/MonkeyDev;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DTHEOS_INSTANCE_NAME=\"\\\"bluedXHookDylib\\\"\"",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		09092109309442420005A0D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				ENABLE_BITCODE = NO;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"$(inherited)",
+					"*.ipa",
+					"*.app",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = bluedXHook/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MONKEYDEV_CLASS_DUMP = NO;
+				MONKEYDEV_DEFAULT_BUNDLEID = NO;
+				MONKEYDEV_INSERT_DYLIB = YES;
+				MONKEYDEV_MINIMAL = YES;
+				MONKEYDEV_RESTORE_SYMBOL = NO;
+				MONKEYDEV_TARGET_APP = Optional;
+				MONKEYDEV_UI_INSPECTOR = None;
+				PODS_CONFIGURATION_BUILD_DIR = "$BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_ROOT = "${SRCROOT}/Pods";
+				PRODUCT_BUNDLE_IDENTIFIER = bear.bluedxhook.com.bluedXHook;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0909210A309442420005A0D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				ENABLE_BITCODE = NO;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"$(inherited)",
+					"*.ipa",
+					"*.app",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = bluedXHook/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MONKEYDEV_CLASS_DUMP = NO;
+				MONKEYDEV_DEFAULT_BUNDLEID = NO;
+				MONKEYDEV_INSERT_DYLIB = YES;
+				MONKEYDEV_MINIMAL = YES;
+				MONKEYDEV_RESTORE_SYMBOL = NO;
+				MONKEYDEV_TARGET_APP = Optional;
+				MONKEYDEV_UI_INSPECTOR = None;
+				PODS_CONFIGURATION_BUILD_DIR = "$BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_ROOT = "${SRCROOT}/Pods";
+				PRODUCT_BUNDLE_IDENTIFIER = bear.bluedxhook.com.bluedXHook;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0909210B309442420005A0D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(MonkeyDevPath)/include",
+					"$(MonkeyDevTheosPath)/include",
+					"$(MonkeyDevTheosPath)/vendor/include",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(MonkeyDevPath)/Frameworks",
+					"$(MonkeyDevTheosPath)/lib",
+					"$(MonkeyDevTheosPath)/vendor/lib",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				MonkeyDevTheosPath = "$(HOME)/theos";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = iphoneos;
+			};
+			name = Debug;
+		};
+		0909210C309442420005A0D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UDPNB3LZ37;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(MonkeyDevPath)/include",
+					"$(MonkeyDevTheosPath)/include",
+					"$(MonkeyDevTheosPath)/vendor/include",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(MonkeyDevPath)/Frameworks",
+					"$(MonkeyDevTheosPath)/lib",
+					"$(MonkeyDevTheosPath)/vendor/lib",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				MonkeyDevTheosPath = "$(HOME)/theos";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		090920C9309442420005A0D9 /* Build configuration list for PBXProject "bluedXHook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0909210B309442420005A0D9 /* Debug */,
+				0909210C309442420005A0D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09092105309442420005A0D9 /* Build configuration list for PBXNativeTarget "bluedXHookDylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09092106309442420005A0D9 /* Debug */,
+				09092107309442420005A0D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09092108309442420005A0D9 /* Build configuration list for PBXNativeTarget "bluedXHook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09092109309442420005A0D9 /* Debug */,
+				0909210A309442420005A0D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 090920C6309442420005A0D9 /* Project object */;
+}
