@@ -505,6 +505,292 @@ static void TechApplySettings(UIViewController *vc) {
     TechFooter(table);
 }
 
+
+// MARK: - MeetPro entry migration (UI only; original Enhancer dylib stays loaded)
+static const NSInteger kBearMeetProButtonTag = 2026110101;
+static char kBearHiddenSettingsRowKey, kBearSettingsRowUpdateKey, kBearOriginalTGButtonKey;
+
+static UIViewController *BearOwningController(UIResponder *responder) {
+    UIResponder *next = responder;
+    for (NSInteger i=0; next && i<32; i++, next=next.nextResponder) {
+        if ([next isKindOfClass:[UIViewController class]]) return (UIViewController *)next;
+    }
+    return nil;
+}
+
+static UIImage *BearMeetProEntryIcon(void) {
+    static UIImage *image;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSString *path = [NSBundle.mainBundle pathForResource:@"MeetProIcon60x60@3x" ofType:@"png"];
+        if (path) image = [UIImage imageWithContentsOfFile:path];
+    });
+    return image;
+}
+
+static void BearOpenEnhancerSettings(UIView *source) {
+    Class settingsClass = objc_getClass("tjq");
+    UIViewController *owner = BearOwningController(source);
+    if (!owner || !settingsClass || ![settingsClass isSubclassOfClass:[UIViewController class]]) {
+        NSLog(@"[bluedXHook][Entry] Cannot open enhancer settings, owner=%@ tjq=%@",
+              owner, settingsClass);
+        if (owner && !settingsClass) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"遇见pro"
+                message:@"插件设置尚未就绪，请稍后重试。" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"确定"
+                style:UIAlertActionStyleDefault handler:nil]];
+            [owner presentViewController:alert animated:YES completion:nil];
+        }
+        return;
+    }
+    UINavigationController *navigation = owner.navigationController;
+    if (navigation && [navigation.topViewController isKindOfClass:settingsClass]) return;
+    UIViewController *vc = [[settingsClass alloc] init];
+    if (!vc) return;
+    vc.hidesBottomBarWhenPushed = YES;
+    if (navigation) {
+        [navigation pushViewController:vc animated:YES];
+    } else {
+        UINavigationController *wrap = [[UINavigationController alloc] initWithRootViewController:vc];
+        [owner presentViewController:wrap animated:YES completion:nil];
+    }
+    NSLog(@"[bluedXHook][Entry] opened existing %@ from %@", settingsClass, owner.class);
+}
+
+static BOOL BearLooksLikeTelegramControl(UIButton *button) {
+    NSMutableString *tokens = [NSMutableString string];
+    for (NSString *s in @[
+        button.currentTitle ?: @"",
+        button.accessibilityLabel ?: @"",
+        button.accessibilityIdentifier ?: @""
+    ]) {
+        if (s.length) [tokens appendFormat:@" %@ ", s.lowercaseString];
+    }
+    for (id target in button.allTargets) {
+        NSArray *actions = [button actionsForTarget:target forControlEvent:UIControlEventTouchUpInside];
+        for (NSString *action in actions) [tokens appendFormat:@" %@ ", action.lowercaseString];
+    }
+    NSString *txt = tokens.lowercaseString;
+    return [txt containsString:@"telegram"] ||
+           [txt containsString:@"opentg"] ||
+           [txt containsString:@"tgbutton"] ||
+           [txt containsString:@"open_tg"] ||
+           [txt containsString:@"taptg"] ||
+           [txt containsString:@"clicktg"] ||
+           [txt containsString:@" tg "];
+}
+
+// Detect the actual TG control rather than guessing a coordinate beside Settings.
+// Native Mine navigation controls are known from BDMineTransNavView's class:
+// settingBtn, qualificationBtn and myAvatarBtn. An extra small interactive view
+// in the same top-right row can be the injected TG control.
+static BOOL BearViewInsideView(UIView *view, UIView *container) {
+    return container && (view==container || [view isDescendantOfView:container]);
+}
+
+static void BearCollectMineTapViews(UIView *root, NSMutableArray<UIView *> *views) {
+    if ([root isKindOfClass:[UIControl class]] || root.gestureRecognizers.count) {
+        [views addObject:root];
+    }
+    for (UIView *child in root.subviews) BearCollectMineTapViews(child, views);
+}
+
+static BOOL BearButtonTargetIsEnhancer(UIButton *button) {
+    for (id target in button.allTargets) {
+        if (BearClassBelongsToEnhancer([target class])) return YES;
+        for (NSString *selector in [button actionsForTarget:target
+                                               forControlEvent:UIControlEventTouchUpInside]) {
+            Method method=class_getInstanceMethod([target class],NSSelectorFromString(selector));
+            if (!method) continue;
+            Dl_info info={0};
+            if (dladdr((void *)method_getImplementation(method),&info) &&
+                info.dli_fname && strstr(info.dli_fname,"BluedEnhancer")) return YES;
+        }
+    }
+    return NO;
+}
+
+static UIView *BearFindOriginalMineTG(UIView *nav, UIButton *entry) {
+    UIButton *setting=nil, *qualification=nil, *avatar=nil;
+    @try {
+        setting=[nav valueForKey:@"settingBtn"];
+        qualification=[nav valueForKey:@"qualificationBtn"];
+        avatar=[nav valueForKey:@"myAvatarBtn"];
+    } @catch (__unused NSException *e) {}
+    if (![setting isKindOfClass:[UIButton class]] || !setting.superview) return nil;
+    if (![qualification isKindOfClass:[UIButton class]]) qualification=nil;
+    if (![avatar isKindOfClass:[UIButton class]]) avatar=nil;
+    CGRect gear=[setting convertRect:setting.bounds toView:nav];
+
+    NSMutableArray<UIView *> *tapViews=[NSMutableArray array];
+    BearCollectMineTapViews(nav,tapViews);
+    NSMutableArray<UIView *> *unknown=[NSMutableArray array];
+    for (UIView *view in tapViews) {
+        if (view==nav || view==entry || view.hidden || view.alpha < 0.05 ||
+            !view.superview || BearViewInsideView(view,setting) ||
+            BearViewInsideView(view,qualification) ||
+            BearViewInsideView(view,avatar)) continue;
+        CGRect rect=[view convertRect:view.bounds toView:nav];
+        // Exclude the Mine content, invisible elements and large overlays.
+        if (rect.size.width < 18 || rect.size.height < 18 ||
+            rect.size.width > 62 || rect.size.height > 62 ||
+            CGRectGetMidX(rect) < CGRectGetWidth(nav.bounds)*0.48 ||
+            fabs(CGRectGetMidY(rect)-CGRectGetMidY(gear)) > 32) continue;
+        if (CGRectIntersectsRect(CGRectInset(rect,3,3),gear)) continue;
+        if ([view isKindOfClass:[UIButton class]]) {
+            UIButton *button=(UIButton *)view;
+            if (BearLooksLikeTelegramControl(button) || BearButtonTargetIsEnhancer(button)) {
+                NSLog(@"[bluedXHook][Entry] TG matched via original button target=%@",
+                      button.accessibilityIdentifier ?: @"(none)");
+                return button;
+            }
+        }
+        // A UIView/UIImageView with a tap recognizer is also a possible TG
+        // injection, not just a named UIButton.
+        if ([view isKindOfClass:[UIControl class]] || view.gestureRecognizers.count) {
+            [unknown addObject:view];
+        }
+    }
+    if (unknown.count==1) {
+        NSLog(@"[bluedXHook][Entry] TG matched as sole extra Mine nav control class=%@",
+              NSStringFromClass([unknown.firstObject class]));
+        return unknown.firstObject;
+    }
+    static char kBearMissingTGLoggedKey;
+    if (!objc_getAssociatedObject(nav,&kBearMissingTGLoggedKey)) {
+        objc_setAssociatedObject(nav,&kBearMissingTGLoggedKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        NSLog(@"[bluedXHook][Entry] TG not identified: %lu candidates; no extra Pro entry added",
+              (unsigned long)unknown.count);
+        for (UIView *view in unknown) {
+            CGRect rect=[view convertRect:view.bounds toView:nav];
+            NSLog(@"[bluedXHook][Entry] candidate class=%@ frame=%@",
+                  NSStringFromClass(view.class),NSStringFromCGRect(rect));
+        }
+    }
+    return nil;
+}
+
+static void BearApplyMineEntry(UIView *nav) {
+    if (!nav || !nav.window || !objc_getClass("tjq")) return;
+    UIButton *entry=(UIButton *)[nav viewWithTag:kBearMeetProButtonTag];
+    if (entry && ![entry isKindOfClass:[UIButton class]]) return;
+
+    UIView *oldTG=objc_getAssociatedObject(nav,&kBearOriginalTGButtonKey);
+    if (oldTG && !oldTG.superview) {
+        objc_setAssociatedObject(nav,&kBearOriginalTGButtonKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        oldTG=nil;
+    }
+    if (!oldTG) {
+        oldTG=BearFindOriginalMineTG(nav,entry);
+        if (oldTG) objc_setAssociatedObject(nav,&kBearOriginalTGButtonKey,oldTG,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    // Never add another button in a guessed empty slot. Leave the original TG
+    // and fallback settings intact until its actual UIKit control is identified.
+    if (!oldTG) {
+        [entry removeFromSuperview];
+        return;
+    }
+    CGRect oldFrame=[oldTG convertRect:oldTG.bounds toView:nav];
+    if (CGRectIsEmpty(oldFrame) || !isfinite(oldFrame.origin.x) ||
+        !isfinite(oldFrame.origin.y)) return;
+    // Preserve original Auto Layout spacing (UIStackView removes hidden items).
+    oldTG.alpha=0;
+    oldTG.userInteractionEnabled=NO;
+
+    if (!entry) {
+        entry=[UIButton buttonWithType:UIButtonTypeCustom];
+        entry.tag=kBearMeetProButtonTag;
+        entry.accessibilityLabel=@"遇见pro插件设置";
+        entry.accessibilityIdentifier=@"bear.meetpro.entry";
+        UIImage *icon=BearMeetProEntryIcon();
+        if (icon) [entry setImage:icon forState:UIControlStateNormal];
+        else [entry setTitle:@"Pro" forState:UIControlStateNormal];
+        entry.imageView.contentMode=UIViewContentModeScaleAspectFit;
+        entry.clipsToBounds=YES;
+        entry.layer.cornerRadius=10;
+        entry.backgroundColor=[UIColor colorWithRed:0.06 green:0.08 blue:0.14 alpha:1];
+        __weak UIView *weakNav=nav;
+        [entry addAction:[UIAction actionWithHandler:^(__kindof UIAction *action) {
+            UIView *strongNav=weakNav;
+            if (strongNav) BearOpenEnhancerSettings(strongNav);
+        }] forControlEvents:UIControlEventTouchUpInside];
+        [nav addSubview:entry];
+        NSLog(@"[bluedXHook][Entry] replaced original TG control at %@",
+              NSStringFromCGRect(oldFrame));
+    }
+    entry.frame=oldFrame;
+    [nav bringSubviewToFront:entry];
+}
+
+static BOOL BearContainsEnhancerEntry(UIView *root) {
+    if (!root) return NO;
+    if ([root isKindOfClass:[UILabel class]]) {
+        UILabel *label=(UILabel *)root;
+        NSString *text=label.text ?: label.attributedText.string;
+        if ([text containsString:@"Blued增强设置"]) return YES;
+    }
+    for (UIView *child in root.subviews) if (BearContainsEnhancerEntry(child)) return YES;
+    return NO;
+}
+
+static void BearHideLegacySettingsEntry(UIViewController *controller) {
+    if (!controller || ![NSStringFromClass(controller.class) isEqualToString:@"BDSettingViewController"]) return;
+    if (!objc_getClass("tjq")) return; // Do not hide the fallback before plugin loads.
+    UITableView *table = nil;
+    @try { table = [(id)controller valueForKey:@"contentTable"]; }
+    @catch (__unused NSException *e) {}
+    if (![table isKindOfClass:[UITableView class]]) return;
+
+    // Handle a custom header insertion without discarding unrelated sections.
+    UIView *header = table.tableHeaderView;
+    if (BearContainsEnhancerEntry(header) && CGRectGetHeight(header.frame)>0.5) {
+        CGRect frame=header.frame;
+        frame.size.height=0.01;
+        header.frame=frame;
+        table.tableHeaderView=header;
+        header.hidden=YES;
+        NSLog(@"[bluedXHook][Entry] collapsed enhancer settings tableHeaderView");
+    }
+
+    for (UITableViewCell *cell in table.visibleCells) {
+        if (!BearContainsEnhancerEntry(cell)) continue;
+        NSIndexPath *index=[table indexPathForCell:cell];
+        if (!index) continue;
+        NSIndexPath *previous=objc_getAssociatedObject(table,&kBearHiddenSettingsRowKey);
+        cell.hidden=YES;
+        cell.userInteractionEnabled=NO;
+        if ([previous isEqual:index]) return;
+        objc_setAssociatedObject(table,&kBearHiddenSettingsRowKey,index,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (objc_getAssociatedObject(table,&kBearSettingsRowUpdateKey)) return;
+        objc_setAssociatedObject(table,&kBearSettingsRowUpdateKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (table.window && [table.dataSource numberOfSectionsInTableView:table] > index.section &&
+                [table.dataSource tableView:table numberOfRowsInSection:index.section] > index.row) {
+                [table beginUpdates];
+                [table endUpdates];
+                NSLog(@"[bluedXHook][Entry] collapsed legacy settings row %@",index);
+            }
+            objc_setAssociatedObject(table,&kBearSettingsRowUpdateKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        });
+        return;
+    }
+}
+
+%hook BDMineTransNavView
+- (void)layoutSubviews {
+    %orig;
+    BearApplyMineEntry((UIView *)self);
+}
+%end
+
+%hook BDSettingViewController
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSIndexPath *hidden = objc_getAssociatedObject(tableView,&kBearHiddenSettingsRowKey);
+    if (hidden && [hidden isEqual:indexPath]) return 0.01;
+    return %orig(tableView,indexPath);
+}
+%end
+
 // We know the settings class (tjq) because its heOpenTelegram method appears
 // in BluedEnhancer, but hook the UIKit superclass so late class loading is OK.
 %hook UIViewController
@@ -539,6 +825,11 @@ static void TechApplySettings(UIViewController *vc) {
     if (TechIsSettings((UIViewController *)self)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             TechApplySettings((UIViewController *)self);
+        });
+    }
+    if ([NSStringFromClass(self.class) isEqualToString:@"BDSettingViewController"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            BearHideLegacySettingsEntry((UIViewController *)self);
         });
     }
 }
@@ -580,6 +871,8 @@ static void TechApplySettings(UIViewController *vc) {
     %orig;
     if (TechIsSettings((UIViewController *)self)) {
         TechApplySettings((UIViewController *)self);
+    } else if ([NSStringFromClass(self.class) isEqualToString:@"BDSettingViewController"]) {
+        BearHideLegacySettingsEntry((UIViewController *)self);
     }
 }
 

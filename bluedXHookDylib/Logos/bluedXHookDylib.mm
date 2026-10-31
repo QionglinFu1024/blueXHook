@@ -136,8 +136,8 @@ free(_methods);
 _searchedClass = class_getSuperclass(_searchedClass);
 }
 }
-@class BDADX_Blued_Splash_Image_ViewController; @class UIWindow; @class UIImage; @class UINavigationController; @class UIAlertController; @class UIViewController; 
-static Class _logos_supermetaclass$_ungrouped$UIImage; static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *);static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSBundle *, UITraitCollection *);static Class _logos_superclass$_ungrouped$UIViewController; static void (*_logos_orig$_ungrouped$UIViewController$viewDidAppear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$viewWillDisappear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL, void (^)(void));static void (*_logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$BDADX_Blued_Splash_Image_ViewController; static void (*_logos_orig$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController)(_LOGOS_SELF_TYPE_NORMAL BDADX_Blued_Splash_Image_ViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UIWindow; static void (*_logos_orig$_ungrouped$UIWindow$makeKeyAndVisible)(_LOGOS_SELF_TYPE_NORMAL UIWindow* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UINavigationController; static void (*_logos_orig$_ungrouped$UINavigationController$pushViewController$animated$)(_LOGOS_SELF_TYPE_NORMAL UINavigationController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL);static Class _logos_supermetaclass$_ungrouped$UIAlertController; static UIAlertController* (*_logos_meta_orig$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSString *, UIAlertControllerStyle);
+@class UIImage; @class UIWindow; @class UIAlertController; @class BDADX_Blued_Splash_Image_ViewController; @class BDMineTransNavView; @class UIViewController; @class BDSettingViewController; @class UINavigationController; 
+static Class _logos_supermetaclass$_ungrouped$UIImage; static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *);static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSBundle *, UITraitCollection *);static Class _logos_superclass$_ungrouped$BDMineTransNavView; static void (*_logos_orig$_ungrouped$BDMineTransNavView$layoutSubviews)(_LOGOS_SELF_TYPE_NORMAL BDMineTransNavView* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$BDSettingViewController; static CGFloat (*_logos_orig$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$)(_LOGOS_SELF_TYPE_NORMAL BDSettingViewController* _LOGOS_SELF_CONST, SEL, UITableView *, NSIndexPath *);static Class _logos_superclass$_ungrouped$UIViewController; static void (*_logos_orig$_ungrouped$UIViewController$viewDidAppear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$viewWillDisappear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL, void (^)(void));static void (*_logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$BDADX_Blued_Splash_Image_ViewController; static void (*_logos_orig$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController)(_LOGOS_SELF_TYPE_NORMAL BDADX_Blued_Splash_Image_ViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UIWindow; static void (*_logos_orig$_ungrouped$UIWindow$makeKeyAndVisible)(_LOGOS_SELF_TYPE_NORMAL UIWindow* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UINavigationController; static void (*_logos_orig$_ungrouped$UINavigationController$pushViewController$animated$)(_LOGOS_SELF_TYPE_NORMAL UINavigationController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL);static Class _logos_supermetaclass$_ungrouped$UIAlertController; static UIAlertController* (*_logos_meta_orig$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSString *, UIAlertControllerStyle);
 
 #line 95 "/Users/bear/Desktop/myApps/bluedXHook/bluedXHookDylib/Logos/bluedXHookDylib.xm"
 
@@ -555,6 +555,292 @@ static void TechApplySettings(UIViewController *vc) {
 
 
 
+static const NSInteger kBearMeetProButtonTag = 2026110101;
+static char kBearHiddenSettingsRowKey, kBearSettingsRowUpdateKey, kBearOriginalTGButtonKey;
+
+static UIViewController *BearOwningController(UIResponder *responder) {
+    UIResponder *next = responder;
+    for (NSInteger i=0; next && i<32; i++, next=next.nextResponder) {
+        if ([next isKindOfClass:[UIViewController class]]) return (UIViewController *)next;
+    }
+    return nil;
+}
+
+static UIImage *BearMeetProEntryIcon(void) {
+    static UIImage *image;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSString *path = [NSBundle.mainBundle pathForResource:@"MeetProIcon60x60@3x" ofType:@"png"];
+        if (path) image = [UIImage imageWithContentsOfFile:path];
+    });
+    return image;
+}
+
+static void BearOpenEnhancerSettings(UIView *source) {
+    Class settingsClass = objc_getClass("tjq");
+    UIViewController *owner = BearOwningController(source);
+    if (!owner || !settingsClass || ![settingsClass isSubclassOfClass:[UIViewController class]]) {
+        NSLog(@"[bluedXHook][Entry] Cannot open enhancer settings, owner=%@ tjq=%@",
+              owner, settingsClass);
+        if (owner && !settingsClass) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"遇见pro"
+                message:@"插件设置尚未就绪，请稍后重试。" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"确定"
+                style:UIAlertActionStyleDefault handler:nil]];
+            [owner presentViewController:alert animated:YES completion:nil];
+        }
+        return;
+    }
+    UINavigationController *navigation = owner.navigationController;
+    if (navigation && [navigation.topViewController isKindOfClass:settingsClass]) return;
+    UIViewController *vc = [[settingsClass alloc] init];
+    if (!vc) return;
+    vc.hidesBottomBarWhenPushed = YES;
+    if (navigation) {
+        [navigation pushViewController:vc animated:YES];
+    } else {
+        UINavigationController *wrap = [[UINavigationController alloc] initWithRootViewController:vc];
+        [owner presentViewController:wrap animated:YES completion:nil];
+    }
+    NSLog(@"[bluedXHook][Entry] opened existing %@ from %@", settingsClass, owner.class);
+}
+
+static BOOL BearLooksLikeTelegramControl(UIButton *button) {
+    NSMutableString *tokens = [NSMutableString string];
+    for (NSString *s in @[
+        button.currentTitle ?: @"",
+        button.accessibilityLabel ?: @"",
+        button.accessibilityIdentifier ?: @""
+    ]) {
+        if (s.length) [tokens appendFormat:@" %@ ", s.lowercaseString];
+    }
+    for (id target in button.allTargets) {
+        NSArray *actions = [button actionsForTarget:target forControlEvent:UIControlEventTouchUpInside];
+        for (NSString *action in actions) [tokens appendFormat:@" %@ ", action.lowercaseString];
+    }
+    NSString *txt = tokens.lowercaseString;
+    return [txt containsString:@"telegram"] ||
+           [txt containsString:@"opentg"] ||
+           [txt containsString:@"tgbutton"] ||
+           [txt containsString:@"open_tg"] ||
+           [txt containsString:@"taptg"] ||
+           [txt containsString:@"clicktg"] ||
+           [txt containsString:@" tg "];
+}
+
+
+
+
+
+static BOOL BearViewInsideView(UIView *view, UIView *container) {
+    return container && (view==container || [view isDescendantOfView:container]);
+}
+
+static void BearCollectMineTapViews(UIView *root, NSMutableArray<UIView *> *views) {
+    if ([root isKindOfClass:[UIControl class]] || root.gestureRecognizers.count) {
+        [views addObject:root];
+    }
+    for (UIView *child in root.subviews) BearCollectMineTapViews(child, views);
+}
+
+static BOOL BearButtonTargetIsEnhancer(UIButton *button) {
+    for (id target in button.allTargets) {
+        if (BearClassBelongsToEnhancer([target class])) return YES;
+        for (NSString *selector in [button actionsForTarget:target
+                                               forControlEvent:UIControlEventTouchUpInside]) {
+            Method method=class_getInstanceMethod([target class],NSSelectorFromString(selector));
+            if (!method) continue;
+            Dl_info info={0};
+            if (dladdr((void *)method_getImplementation(method),&info) &&
+                info.dli_fname && strstr(info.dli_fname,"BluedEnhancer")) return YES;
+        }
+    }
+    return NO;
+}
+
+static UIView *BearFindOriginalMineTG(UIView *nav, UIButton *entry) {
+    UIButton *setting=nil, *qualification=nil, *avatar=nil;
+    @try {
+        setting=[nav valueForKey:@"settingBtn"];
+        qualification=[nav valueForKey:@"qualificationBtn"];
+        avatar=[nav valueForKey:@"myAvatarBtn"];
+    } @catch (__unused NSException *e) {}
+    if (![setting isKindOfClass:[UIButton class]] || !setting.superview) return nil;
+    if (![qualification isKindOfClass:[UIButton class]]) qualification=nil;
+    if (![avatar isKindOfClass:[UIButton class]]) avatar=nil;
+    CGRect gear=[setting convertRect:setting.bounds toView:nav];
+
+    NSMutableArray<UIView *> *tapViews=[NSMutableArray array];
+    BearCollectMineTapViews(nav,tapViews);
+    NSMutableArray<UIView *> *unknown=[NSMutableArray array];
+    for (UIView *view in tapViews) {
+        if (view==nav || view==entry || view.hidden || view.alpha < 0.05 ||
+            !view.superview || BearViewInsideView(view,setting) ||
+            BearViewInsideView(view,qualification) ||
+            BearViewInsideView(view,avatar)) continue;
+        CGRect rect=[view convertRect:view.bounds toView:nav];
+        
+        if (rect.size.width < 18 || rect.size.height < 18 ||
+            rect.size.width > 62 || rect.size.height > 62 ||
+            CGRectGetMidX(rect) < CGRectGetWidth(nav.bounds)*0.48 ||
+            fabs(CGRectGetMidY(rect)-CGRectGetMidY(gear)) > 32) continue;
+        if (CGRectIntersectsRect(CGRectInset(rect,3,3),gear)) continue;
+        if ([view isKindOfClass:[UIButton class]]) {
+            UIButton *button=(UIButton *)view;
+            if (BearLooksLikeTelegramControl(button) || BearButtonTargetIsEnhancer(button)) {
+                NSLog(@"[bluedXHook][Entry] TG matched via original button target=%@",
+                      button.accessibilityIdentifier ?: @"(none)");
+                return button;
+            }
+        }
+        
+        
+        if ([view isKindOfClass:[UIControl class]] || view.gestureRecognizers.count) {
+            [unknown addObject:view];
+        }
+    }
+    if (unknown.count==1) {
+        NSLog(@"[bluedXHook][Entry] TG matched as sole extra Mine nav control class=%@",
+              NSStringFromClass([unknown.firstObject class]));
+        return unknown.firstObject;
+    }
+    static char kBearMissingTGLoggedKey;
+    if (!objc_getAssociatedObject(nav,&kBearMissingTGLoggedKey)) {
+        objc_setAssociatedObject(nav,&kBearMissingTGLoggedKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        NSLog(@"[bluedXHook][Entry] TG not identified: %lu candidates; no extra Pro entry added",
+              (unsigned long)unknown.count);
+        for (UIView *view in unknown) {
+            CGRect rect=[view convertRect:view.bounds toView:nav];
+            NSLog(@"[bluedXHook][Entry] candidate class=%@ frame=%@",
+                  NSStringFromClass(view.class),NSStringFromCGRect(rect));
+        }
+    }
+    return nil;
+}
+
+static void BearApplyMineEntry(UIView *nav) {
+    if (!nav || !nav.window || !objc_getClass("tjq")) return;
+    UIButton *entry=(UIButton *)[nav viewWithTag:kBearMeetProButtonTag];
+    if (entry && ![entry isKindOfClass:[UIButton class]]) return;
+
+    UIView *oldTG=objc_getAssociatedObject(nav,&kBearOriginalTGButtonKey);
+    if (oldTG && !oldTG.superview) {
+        objc_setAssociatedObject(nav,&kBearOriginalTGButtonKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        oldTG=nil;
+    }
+    if (!oldTG) {
+        oldTG=BearFindOriginalMineTG(nav,entry);
+        if (oldTG) objc_setAssociatedObject(nav,&kBearOriginalTGButtonKey,oldTG,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    
+    if (!oldTG) {
+        [entry removeFromSuperview];
+        return;
+    }
+    CGRect oldFrame=[oldTG convertRect:oldTG.bounds toView:nav];
+    if (CGRectIsEmpty(oldFrame) || !isfinite(oldFrame.origin.x) ||
+        !isfinite(oldFrame.origin.y)) return;
+    
+    oldTG.alpha=0;
+    oldTG.userInteractionEnabled=NO;
+
+    if (!entry) {
+        entry=[UIButton buttonWithType:UIButtonTypeCustom];
+        entry.tag=kBearMeetProButtonTag;
+        entry.accessibilityLabel=@"遇见pro插件设置";
+        entry.accessibilityIdentifier=@"bear.meetpro.entry";
+        UIImage *icon=BearMeetProEntryIcon();
+        if (icon) [entry setImage:icon forState:UIControlStateNormal];
+        else [entry setTitle:@"Pro" forState:UIControlStateNormal];
+        entry.imageView.contentMode=UIViewContentModeScaleAspectFit;
+        entry.clipsToBounds=YES;
+        entry.layer.cornerRadius=10;
+        entry.backgroundColor=[UIColor colorWithRed:0.06 green:0.08 blue:0.14 alpha:1];
+        __weak UIView *weakNav=nav;
+        [entry addAction:[UIAction actionWithHandler:^(__kindof UIAction *action) {
+            UIView *strongNav=weakNav;
+            if (strongNav) BearOpenEnhancerSettings(strongNav);
+        }] forControlEvents:UIControlEventTouchUpInside];
+        [nav addSubview:entry];
+        NSLog(@"[bluedXHook][Entry] replaced original TG control at %@",
+              NSStringFromCGRect(oldFrame));
+    }
+    entry.frame=oldFrame;
+    [nav bringSubviewToFront:entry];
+}
+
+static BOOL BearContainsEnhancerEntry(UIView *root) {
+    if (!root) return NO;
+    if ([root isKindOfClass:[UILabel class]]) {
+        UILabel *label=(UILabel *)root;
+        NSString *text=label.text ?: label.attributedText.string;
+        if ([text containsString:@"Blued增强设置"]) return YES;
+    }
+    for (UIView *child in root.subviews) if (BearContainsEnhancerEntry(child)) return YES;
+    return NO;
+}
+
+static void BearHideLegacySettingsEntry(UIViewController *controller) {
+    if (!controller || ![NSStringFromClass(controller.class) isEqualToString:@"BDSettingViewController"]) return;
+    if (!objc_getClass("tjq")) return; 
+    UITableView *table = nil;
+    @try { table = [(id)controller valueForKey:@"contentTable"]; }
+    @catch (__unused NSException *e) {}
+    if (![table isKindOfClass:[UITableView class]]) return;
+
+    
+    UIView *header = table.tableHeaderView;
+    if (BearContainsEnhancerEntry(header) && CGRectGetHeight(header.frame)>0.5) {
+        CGRect frame=header.frame;
+        frame.size.height=0.01;
+        header.frame=frame;
+        table.tableHeaderView=header;
+        header.hidden=YES;
+        NSLog(@"[bluedXHook][Entry] collapsed enhancer settings tableHeaderView");
+    }
+
+    for (UITableViewCell *cell in table.visibleCells) {
+        if (!BearContainsEnhancerEntry(cell)) continue;
+        NSIndexPath *index=[table indexPathForCell:cell];
+        if (!index) continue;
+        NSIndexPath *previous=objc_getAssociatedObject(table,&kBearHiddenSettingsRowKey);
+        cell.hidden=YES;
+        cell.userInteractionEnabled=NO;
+        if ([previous isEqual:index]) return;
+        objc_setAssociatedObject(table,&kBearHiddenSettingsRowKey,index,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (objc_getAssociatedObject(table,&kBearSettingsRowUpdateKey)) return;
+        objc_setAssociatedObject(table,&kBearSettingsRowUpdateKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (table.window && [table.dataSource numberOfSectionsInTableView:table] > index.section &&
+                [table.dataSource tableView:table numberOfRowsInSection:index.section] > index.row) {
+                [table beginUpdates];
+                [table endUpdates];
+                NSLog(@"[bluedXHook][Entry] collapsed legacy settings row %@",index);
+            }
+            objc_setAssociatedObject(table,&kBearSettingsRowUpdateKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        });
+        return;
+    }
+}
+
+
+static void _logos_method$_ungrouped$BDMineTransNavView$layoutSubviews(_LOGOS_SELF_TYPE_NORMAL BDMineTransNavView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
+    _logos_orig$_ungrouped$BDMineTransNavView$layoutSubviews(self, _cmd);
+    BearApplyMineEntry((UIView *)self);
+}
+
+
+
+static CGFloat _logos_method$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$(_LOGOS_SELF_TYPE_NORMAL BDSettingViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, UITableView * tableView, NSIndexPath * indexPath) {
+    NSIndexPath *hidden = objc_getAssociatedObject(tableView,&kBearHiddenSettingsRowKey);
+    if (hidden && [hidden isEqual:indexPath]) return 0.01;
+    return _logos_orig$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$(self, _cmd, tableView,indexPath);
+}
+
+
+
+
 
 
 static void _logos_method$_ungrouped$UIViewController$viewDidAppear$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL animated) {
@@ -587,6 +873,11 @@ static void _logos_method$_ungrouped$UIViewController$viewDidAppear$(_LOGOS_SELF
     if (TechIsSettings((UIViewController *)self)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             TechApplySettings((UIViewController *)self);
+        });
+    }
+    if ([NSStringFromClass(self.class) isEqualToString:@"BDSettingViewController"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            BearHideLegacySettingsEntry((UIViewController *)self);
         });
     }
 }
@@ -628,6 +919,8 @@ static void _logos_method$_ungrouped$UIViewController$viewDidLayoutSubviews(_LOG
     _logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews(self, _cmd);
     if (TechIsSettings((UIViewController *)self)) {
         TechApplySettings((UIViewController *)self);
+    } else if ([NSStringFromClass(self.class) isEqualToString:@"BDSettingViewController"]) {
+        BearHideLegacySettingsEntry((UIViewController *)self);
     }
 }
 
@@ -688,9 +981,9 @@ static UIAlertController* _logos_meta_method$_ungrouped$UIAlertController$alertC
 
 #endif
 
-static __attribute__((constructor)) void _logosLocalCtor_e5b54f5a(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_483b26b8(int __unused argc, char __unused **argv, char __unused **envp) {
     kBearLaunchBeginTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"[bluedXHook] TG area credit hook initialized");
-    {Class _logos_class$_ungrouped$UIImage = objc_getClass("UIImage"); Class _logos_metaclass$_ungrouped$UIImage = object_getClass(_logos_class$_ungrouped$UIImage); _logos_supermetaclass$_ungrouped$UIImage = class_getSuperclass(_logos_metaclass$_ungrouped$UIImage); { _logos_register_hook(_logos_metaclass$_ungrouped$UIImage, @selector(imageNamed:), (IMP)&_logos_meta_method$_ungrouped$UIImage$imageNamed$, (IMP *)&_logos_meta_orig$_ungrouped$UIImage$imageNamed$);}{ _logos_register_hook(_logos_metaclass$_ungrouped$UIImage, @selector(imageNamed:inBundle:compatibleWithTraitCollection:), (IMP)&_logos_meta_method$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$, (IMP *)&_logos_meta_orig$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$);}Class _logos_class$_ungrouped$UIViewController = objc_getClass("UIViewController"); _logos_superclass$_ungrouped$UIViewController = class_getSuperclass(_logos_class$_ungrouped$UIViewController); { _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewDidAppear:), (IMP)&_logos_method$_ungrouped$UIViewController$viewDidAppear$, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewDidAppear$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewWillDisappear:), (IMP)&_logos_method$_ungrouped$UIViewController$viewWillDisappear$, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewWillDisappear$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(presentViewController:animated:completion:), (IMP)&_logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$, (IMP *)&_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewDidLayoutSubviews), (IMP)&_logos_method$_ungrouped$UIViewController$viewDidLayoutSubviews, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews);}Class _logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController = objc_getClass("BDADX_Blued_Splash_Image_ViewController"); _logos_superclass$_ungrouped$BDADX_Blued_Splash_Image_ViewController = class_getSuperclass(_logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController); { _logos_register_hook(_logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController, @selector(presentBluedSplashImageViewController), (IMP)&_logos_method$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController, (IMP *)&_logos_orig$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController);}Class _logos_class$_ungrouped$UIWindow = objc_getClass("UIWindow"); _logos_superclass$_ungrouped$UIWindow = class_getSuperclass(_logos_class$_ungrouped$UIWindow); { _logos_register_hook(_logos_class$_ungrouped$UIWindow, @selector(makeKeyAndVisible), (IMP)&_logos_method$_ungrouped$UIWindow$makeKeyAndVisible, (IMP *)&_logos_orig$_ungrouped$UIWindow$makeKeyAndVisible);}Class _logos_class$_ungrouped$UINavigationController = objc_getClass("UINavigationController"); _logos_superclass$_ungrouped$UINavigationController = class_getSuperclass(_logos_class$_ungrouped$UINavigationController); { _logos_register_hook(_logos_class$_ungrouped$UINavigationController, @selector(pushViewController:animated:), (IMP)&_logos_method$_ungrouped$UINavigationController$pushViewController$animated$, (IMP *)&_logos_orig$_ungrouped$UINavigationController$pushViewController$animated$);}Class _logos_class$_ungrouped$UIAlertController = objc_getClass("UIAlertController"); Class _logos_metaclass$_ungrouped$UIAlertController = object_getClass(_logos_class$_ungrouped$UIAlertController); _logos_supermetaclass$_ungrouped$UIAlertController = class_getSuperclass(_logos_metaclass$_ungrouped$UIAlertController); { _logos_register_hook(_logos_metaclass$_ungrouped$UIAlertController, @selector(alertControllerWithTitle:message:preferredStyle:), (IMP)&_logos_meta_method$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$, (IMP *)&_logos_meta_orig$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$);}}
+    {Class _logos_class$_ungrouped$UIImage = objc_getClass("UIImage"); Class _logos_metaclass$_ungrouped$UIImage = object_getClass(_logos_class$_ungrouped$UIImage); _logos_supermetaclass$_ungrouped$UIImage = class_getSuperclass(_logos_metaclass$_ungrouped$UIImage); { _logos_register_hook(_logos_metaclass$_ungrouped$UIImage, @selector(imageNamed:), (IMP)&_logos_meta_method$_ungrouped$UIImage$imageNamed$, (IMP *)&_logos_meta_orig$_ungrouped$UIImage$imageNamed$);}{ _logos_register_hook(_logos_metaclass$_ungrouped$UIImage, @selector(imageNamed:inBundle:compatibleWithTraitCollection:), (IMP)&_logos_meta_method$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$, (IMP *)&_logos_meta_orig$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$);}Class _logos_class$_ungrouped$BDMineTransNavView = objc_getClass("BDMineTransNavView"); _logos_superclass$_ungrouped$BDMineTransNavView = class_getSuperclass(_logos_class$_ungrouped$BDMineTransNavView); { _logos_register_hook(_logos_class$_ungrouped$BDMineTransNavView, @selector(layoutSubviews), (IMP)&_logos_method$_ungrouped$BDMineTransNavView$layoutSubviews, (IMP *)&_logos_orig$_ungrouped$BDMineTransNavView$layoutSubviews);}Class _logos_class$_ungrouped$BDSettingViewController = objc_getClass("BDSettingViewController"); _logos_superclass$_ungrouped$BDSettingViewController = class_getSuperclass(_logos_class$_ungrouped$BDSettingViewController); { _logos_register_hook(_logos_class$_ungrouped$BDSettingViewController, @selector(tableView:heightForRowAtIndexPath:), (IMP)&_logos_method$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$, (IMP *)&_logos_orig$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$);}Class _logos_class$_ungrouped$UIViewController = objc_getClass("UIViewController"); _logos_superclass$_ungrouped$UIViewController = class_getSuperclass(_logos_class$_ungrouped$UIViewController); { _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewDidAppear:), (IMP)&_logos_method$_ungrouped$UIViewController$viewDidAppear$, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewDidAppear$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewWillDisappear:), (IMP)&_logos_method$_ungrouped$UIViewController$viewWillDisappear$, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewWillDisappear$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(presentViewController:animated:completion:), (IMP)&_logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$, (IMP *)&_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$);}{ _logos_register_hook(_logos_class$_ungrouped$UIViewController, @selector(viewDidLayoutSubviews), (IMP)&_logos_method$_ungrouped$UIViewController$viewDidLayoutSubviews, (IMP *)&_logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews);}Class _logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController = objc_getClass("BDADX_Blued_Splash_Image_ViewController"); _logos_superclass$_ungrouped$BDADX_Blued_Splash_Image_ViewController = class_getSuperclass(_logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController); { _logos_register_hook(_logos_class$_ungrouped$BDADX_Blued_Splash_Image_ViewController, @selector(presentBluedSplashImageViewController), (IMP)&_logos_method$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController, (IMP *)&_logos_orig$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController);}Class _logos_class$_ungrouped$UIWindow = objc_getClass("UIWindow"); _logos_superclass$_ungrouped$UIWindow = class_getSuperclass(_logos_class$_ungrouped$UIWindow); { _logos_register_hook(_logos_class$_ungrouped$UIWindow, @selector(makeKeyAndVisible), (IMP)&_logos_method$_ungrouped$UIWindow$makeKeyAndVisible, (IMP *)&_logos_orig$_ungrouped$UIWindow$makeKeyAndVisible);}Class _logos_class$_ungrouped$UINavigationController = objc_getClass("UINavigationController"); _logos_superclass$_ungrouped$UINavigationController = class_getSuperclass(_logos_class$_ungrouped$UINavigationController); { _logos_register_hook(_logos_class$_ungrouped$UINavigationController, @selector(pushViewController:animated:), (IMP)&_logos_method$_ungrouped$UINavigationController$pushViewController$animated$, (IMP *)&_logos_orig$_ungrouped$UINavigationController$pushViewController$animated$);}Class _logos_class$_ungrouped$UIAlertController = objc_getClass("UIAlertController"); Class _logos_metaclass$_ungrouped$UIAlertController = object_getClass(_logos_class$_ungrouped$UIAlertController); _logos_supermetaclass$_ungrouped$UIAlertController = class_getSuperclass(_logos_metaclass$_ungrouped$UIAlertController); { _logos_register_hook(_logos_metaclass$_ungrouped$UIAlertController, @selector(alertControllerWithTitle:message:preferredStyle:), (IMP)&_logos_meta_method$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$, (IMP *)&_logos_meta_orig$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$);}}
 }
 
