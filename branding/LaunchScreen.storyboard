@@ -13,7 +13,7 @@
                     <view key="view" contentMode="scaleToFill" id="u4o-Sw-OzN">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="MeetProLaunch" translatesAutoresizingMaskIntoConstraints="NO" id="mLa-SY-s4r">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="MeetProLaunch" translatesAutoresizingMaskIntoConstraints="NO" id="mLa-SY-s4r">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                         </subviews>

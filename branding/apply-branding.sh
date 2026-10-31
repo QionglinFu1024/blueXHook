@@ -15,13 +15,16 @@ ICON="${BRAND}/AppIcon_1024.png"
 SPLASH="${BRAND}/splash海报.png"
 PB=/usr/libexec/PlistBuddy
 
+# Branding is applied to the repacked App only, before codesigning.
+/bin/bash "${SRCROOT}/branding/rename-plugin.sh" "$APP"
+
 for required in "$PLIST" "$ICON" "$SPLASH" "$STORYBOARD"; do
   [[ -f "$required" ]] || { echo "Branding: missing file: $required" >&2; exit 1; }
 done
 
 # Launch storyboard references MeetProLaunch.png; preserve the original IPA's
-# unrelated compiled assets and storyboards. Use aspect-fit to avoid cutting off
-# the logo on tall iPhones, with a dark background for letterboxed space.
+# unrelated compiled assets and storyboards. Aspect-fill covers the entire screen
+# on taller iPhones, cropping only the outer sides of the supplied artwork.
 /bin/cp -f "$SPLASH" "${APP}/MeetProLaunch.png"
 rm -rf "${APP}/LaunchScreen.storyboardc"
 /usr/bin/xcrun ibtool --compile "${APP}/LaunchScreen.storyboardc" "$STORYBOARD"

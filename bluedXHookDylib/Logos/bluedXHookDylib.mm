@@ -12,7 +12,7 @@ static BOOL BearComesFromEnhancer(const void *caller) {
 #if BEAR_PROMO_TRACE_ENABLED
     Dl_info symbol = {0};
     return caller != NULL && dladdr(caller, &symbol) != 0 &&
-           symbol.dli_fname != NULL && strstr(symbol.dli_fname, "BluedEnhancer") != NULL;
+           symbol.dli_fname != NULL && strstr(symbol.dli_fname, "YuJianProCore.dylib") != NULL;
 #else
     return NO;
 #endif
@@ -21,7 +21,7 @@ static BOOL BearComesFromEnhancer(const void *caller) {
 static BOOL BearClassBelongsToEnhancer(Class cls) {
 #if BEAR_PROMO_TRACE_ENABLED
     const char *image = cls != Nil ? class_getImageName(cls) : NULL;
-    return image != NULL && strstr(image, "BluedEnhancer") != NULL;
+    return image != NULL && strstr(image, "YuJianProCore.dylib") != NULL;
 #else
     return NO;
 #endif
@@ -136,7 +136,7 @@ free(_methods);
 _searchedClass = class_getSuperclass(_searchedClass);
 }
 }
-@class UIAlertController; @class UIImage; @class UIViewController; @class BDADX_Blued_Splash_Image_ViewController; @class BDMineTransNavView; @class BDSettingViewController; @class UINavigationController; @class UIWindow; 
+@class BDADX_Blued_Splash_Image_ViewController; @class UIImage; @class UIAlertController; @class UINavigationController; @class UIWindow; @class BDSettingViewController; @class UIViewController; @class BDMineTransNavView; 
 static Class _logos_supermetaclass$_ungrouped$UIImage; static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *);static UIImage * (*_logos_meta_orig$_ungrouped$UIImage$imageNamed$inBundle$compatibleWithTraitCollection$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSBundle *, UITraitCollection *);static Class _logos_superclass$_ungrouped$BDMineTransNavView; static void (*_logos_orig$_ungrouped$BDMineTransNavView$layoutSubviews)(_LOGOS_SELF_TYPE_NORMAL BDMineTransNavView* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$BDSettingViewController; static CGFloat (*_logos_orig$_ungrouped$BDSettingViewController$tableView$heightForRowAtIndexPath$)(_LOGOS_SELF_TYPE_NORMAL BDSettingViewController* _LOGOS_SELF_CONST, SEL, UITableView *, NSIndexPath *);static Class _logos_superclass$_ungrouped$UIViewController; static void (*_logos_orig$_ungrouped$UIViewController$viewDidAppear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$viewWillDisappear$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, BOOL);static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL, void (^)(void));static void (*_logos_orig$_ungrouped$UIViewController$viewDidLayoutSubviews)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$BDADX_Blued_Splash_Image_ViewController; static void (*_logos_orig$_ungrouped$BDADX_Blued_Splash_Image_ViewController$presentBluedSplashImageViewController)(_LOGOS_SELF_TYPE_NORMAL BDADX_Blued_Splash_Image_ViewController* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UIWindow; static void (*_logos_orig$_ungrouped$UIWindow$makeKeyAndVisible)(_LOGOS_SELF_TYPE_NORMAL UIWindow* _LOGOS_SELF_CONST, SEL);static Class _logos_superclass$_ungrouped$UINavigationController; static void (*_logos_orig$_ungrouped$UINavigationController$pushViewController$animated$)(_LOGOS_SELF_TYPE_NORMAL UINavigationController* _LOGOS_SELF_CONST, SEL, UIViewController *, BOOL);static Class _logos_supermetaclass$_ungrouped$UIAlertController; static UIAlertController* (*_logos_meta_orig$_ungrouped$UIAlertController$alertControllerWithTitle$message$preferredStyle$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, NSString *, UIAlertControllerStyle);
 
 #line 95 "/Users/bear/Desktop/myApps/bluedXHook/bluedXHookDylib/Logos/bluedXHookDylib.xm"
@@ -314,9 +314,9 @@ static void TechStyleControls(UIView *view) {
     if ([view isKindOfClass:[UISwitch class]]) {
         UISwitch *toggle=(UISwitch *)view;
         
-        CGSize track=toggle.bounds.size;
-        if (track.width<=0 || track.height<=0) track=CGSizeMake(51,31);
-        toggle.onTintColor=[UIColor colorWithPatternImage:TechActionImage(track,1.0)];
+        
+        
+        toggle.onTintColor=TechRGB(40,115,255);
         toggle.thumbTintColor=UIColor.whiteColor;
         toggle.tintColor=TechLine();
         
@@ -489,13 +489,13 @@ static void TechNavigation(UIViewController *vc) {
     if (vc.navigationItem.titleView.tag!=kTechFooterTag) {
         UILabel *name=[UILabel new];
         name.tag=kTechFooterTag;
-        name.accessibilityLabel=@"遇见pro";
-        NSMutableAttributedString *text=[[NSMutableAttributedString alloc] initWithString:@"遇见pro"];
+        name.accessibilityLabel=@"遇见Bro";
+        NSMutableAttributedString *text=[[NSMutableAttributedString alloc] initWithString:@"遇见Bro"];
         [text addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18 weight:UIFontWeightBold],
             NSForegroundColorAttributeName:TechText()} range:NSMakeRange(0,text.length)];
         name.attributedText=text;
         [name sizeToFit];
-        vc.navigationItem.title=@"遇见pro";
+        vc.navigationItem.title=@"遇见Bro";
         vc.navigationItem.titleView=name;
     }
 }
@@ -583,7 +583,7 @@ static void BearOpenEnhancerSettings(UIView *source) {
         NSLog(@"[bluedXHook][Entry] Cannot open enhancer settings, owner=%@ tjq=%@",
               owner, settingsClass);
         if (owner && !settingsClass) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"遇见pro"
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"遇见Bro"
                 message:@"插件设置尚未就绪，请稍后重试。" preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:@"确定"
                 style:UIAlertActionStyleDefault handler:nil]];
@@ -652,7 +652,7 @@ static BOOL BearButtonTargetIsEnhancer(UIButton *button) {
             if (!method) continue;
             Dl_info info={0};
             if (dladdr((void *)method_getImplementation(method),&info) &&
-                info.dli_fname && strstr(info.dli_fname,"BluedEnhancer")) return YES;
+                info.dli_fname && strstr(info.dli_fname,"YuJianProCore.dylib")) return YES;
         }
     }
     return NO;
@@ -748,7 +748,7 @@ static void BearApplyMineEntry(UIView *nav) {
     if (!entry) {
         entry=[UIButton buttonWithType:UIButtonTypeCustom];
         entry.tag=kBearMeetProButtonTag;
-        entry.accessibilityLabel=@"遇见pro插件设置";
+        entry.accessibilityLabel=@"遇见Bro插件设置";
         entry.accessibilityIdentifier=@"bear.meetpro.entry";
         UIImage *icon=BearMeetProEntryIcon();
         if (icon) [entry setImage:icon forState:UIControlStateNormal];
