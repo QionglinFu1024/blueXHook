@@ -216,6 +216,7 @@
 				090920CC309442420005A0D9 /* ShellScript */,
 				090920CD309442420005A0D9 /* Resources */,
 				090920CE309442420005A0D9 /* CopyFiles */,
+				B8436A09871B4B9A9E641111 /* Apply MeetPro Branding */,
 				090920CF309442420005A0D9 /* ShellScript */,
 			);
 			buildRules = (
@@ -317,6 +318,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "bash ${SRCROOT}/bluedXHook/Scripts/pack-compat.sh";
+		};
+		B8436A09871B4B9A9E641111 /* Apply MeetPro Branding */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "bash \"${SRCROOT}/branding/apply-branding.sh\"";
 		};
 		090920CF309442420005A0D9 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

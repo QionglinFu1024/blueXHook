@@ -51,6 +51,60 @@ static BOOL BearIsStartupSplash(UIViewController *controller) {
 - (void)dealForSkipCloseSplashAd;
 @end
 
+// The app creates a second launch image overlay after iOS has already shown
+// our branded LaunchScreen. Keep only the system LaunchScreen visually:
+// suppress the in-process legacy images instead of showing MeetPro twice.
+#define BEAR_REPLACE_INTERNAL_LAUNCH_IMAGE 1
+static CFAbsoluteTime kBearLaunchBeginTime = 0;
+static BOOL BearIsEarlyLaunchAsset(NSString *name) {
+#if BEAR_REPLACE_INTERNAL_LAUNCH_IMAGE
+    if (name.length == 0) return NO;
+    // Avoid altering unrelated in-app UI after the initial loading period.
+    if (kBearLaunchBeginTime == 0 ||
+        CFAbsoluteTimeGetCurrent() - kBearLaunchBeginTime > 30.0) return NO;
+    return [name isEqualToString:@"launch_screen_new"] ||
+           [name isEqualToString:@"launch_light"] ||
+           [name isEqualToString:@"launch_dark"];
+#else
+    return NO;
+#endif
+}
+
+static UIImage *BearStartupBrandImageForName(NSString *name, NSBundle *bundle) {
+    if (bundle != nil && bundle != NSBundle.mainBundle) return nil;
+    if (!BearIsEarlyLaunchAsset(name)) return nil;
+
+    // Return a valid transparent UIImage rather than nil: nil would let some
+    // app code fall back to the original Assets.car and display Blued again.
+    // This also avoids adding any new window/view or changing startup timing.
+    static UIImage *clearLaunchImage = nil;
+    static dispatch_once_t clearOnce;
+    dispatch_once(&clearOnce, ^{
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, 1), NO, 1.0);
+        clearLaunchImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    });
+    if ([name isEqualToString:@"launch_screen_new"]) {
+        NSLog(@"[bluedXHook][LaunchBrand] suppressed duplicate in-app launch_screen_new");
+    } else {
+        NSLog(@"[bluedXHook][LaunchBrand] suppressed old launch logo: %@", name);
+    }
+    return clearLaunchImage;
+}
+
+%hook UIImage
++ (UIImage *)imageNamed:(NSString *)name {
+    UIImage *branded = BearStartupBrandImageForName(name, NSBundle.mainBundle);
+    return branded ?: %orig;
+}
+
++ (UIImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle compatibleWithTraitCollection:(UITraitCollection *)traitCollection {
+    UIImage *branded = BearStartupBrandImageForName(name, bundle);
+    return branded ?: %orig;
+}
+%end
+
+#define BEAR_SETTINGS_TECH_UI 1
 // The credit belongs beside the existing BluedEnhancer Telegram/version area,
 // not at the end of UITableView.tableFooterView.
 static NSString *const kBearPluginLabelText = @"Bear 来过 🐻";
@@ -74,7 +128,8 @@ static UILabel *BearFindTextLabel(UIView *root, NSString *needle) {
 }
 
 static void BearPlaceCreditNearTelegram(UIViewController *controller) {
-    if (![NSStringFromClass(controller.class) isEqualToString:@"tjq"] ||
+    if (BEAR_SETTINGS_TECH_UI ||
+        ![NSStringFromClass(controller.class) isEqualToString:@"tjq"] ||
         ![controller isKindOfClass:[UITableViewController class]]) {
         return;
     }
@@ -137,6 +192,319 @@ static void BearPlaceCreditNearTelegram(UIViewController *controller) {
     }
 }
 
+
+// Isolated "遇见pro" visual skin. Never replace the original switches/data source.
+static const NSInteger kTechFooterTag = 20261031;
+static const NSInteger kTechDividerTag = 20261032;
+static const NSInteger kTechHeaderTag = 20261033;
+static char kTechOriginalBarKey, kTechOriginalTintKey, kTechOriginalBarStyleKey;
+static char kTechOriginalScrollKey, kTechOriginalCompactKey, kTechTableInitializedKey;
+static UIColor *TechRGB(CGFloat r,CGFloat g,CGFloat b) {
+    return [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1];
+}
+// Palette from alinye's design sources: light lavender-gray, near-white,
+// charcoal text and a soft pink/lilac header wash.
+static UIColor *TechBackground(void) { return TechRGB(242,241,246); }
+static UIColor *TechCard(void) { return TechRGB(250,250,252); }
+static UIColor *TechAccent(void) { return TechRGB(51,51,51); }
+static UIColor *TechText(void) { return TechRGB(51,51,51); }
+static UIColor *TechMuted(void) { return TechRGB(101,101,101); }
+static UIColor *TechLine(void) { return TechRGB(226,226,226); }
+static UIColor *TechSelected(void) { return TechRGB(227,228,253); }
+static UIColor *TechHeaderTint(void) { return TechRGB(245,233,255); }
+// "选择TA合页" uses a cyan-to-pink pill with charcoal lettering.
+static UIImage *TechActionImage(CGSize size, CGFloat opacity) {
+    size=CGSizeMake(MAX(1,ceil(size.width)),MAX(1,ceil(size.height)));
+    static NSCache<NSString *,UIImage *> *cache;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ cache=[NSCache new]; cache.countLimit=48; });
+    NSString *key=[NSString stringWithFormat:@"%.0fx%.0f-%.2f",size.width,size.height,opacity];
+    UIImage *cached=[cache objectForKey:key];
+    if (cached) return cached;
+    UIGraphicsImageRenderer *renderer=[[UIGraphicsImageRenderer alloc] initWithSize:size];
+    UIImage *image=[renderer imageWithActions:^(UIGraphicsImageRendererContext *context) {
+        CGRect rect=(CGRect){CGPointZero,size};
+        [[UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:size.height/2.0] addClip];
+        NSArray *colors=@[(id)[TechRGB(144,240,255) colorWithAlphaComponent:opacity].CGColor,
+                          (id)[TechRGB(255,144,244) colorWithAlphaComponent:opacity].CGColor];
+        CGColorSpaceRef space=CGColorSpaceCreateDeviceRGB();
+        CGGradientRef gradient=CGGradientCreateWithColors(space,(__bridge CFArrayRef)colors,NULL);
+        CGContextDrawLinearGradient(context.CGContext,gradient,
+                                    CGPointMake(0,size.height/2.0),
+                                    CGPointMake(size.width,size.height/2.0),0);
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(space);
+    }];
+    [cache setObject:image forKey:key];
+    return image;
+}
+static BOOL TechIsSettings(id vc) {
+    return [NSStringFromClass([vc class]) isEqualToString:@"tjq"] &&
+           [vc isKindOfClass:[UITableViewController class]];
+}
+static BOOL TechContainsSearch(UIView *v) {
+    if ([v isKindOfClass:[UISearchBar class]]) return YES;
+    for (UIView *child in v.subviews) if (TechContainsSearch(child)) return YES;
+    return NO;
+}
+static NSString *TechBuildTime(void) {
+    static NSString *stamp;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSDateFormatter *parser=[NSDateFormatter new], *output=[NSDateFormatter new];
+        parser.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        parser.dateFormat=@"MMM d yyyy HH:mm:ss";
+        output.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        output.dateFormat=@"yyyy-MM-dd HH:mm:ss";
+        NSDate *date=[parser dateFromString:[NSString stringWithFormat:@"%s %s",__DATE__,__TIME__]];
+        stamp=date ? [output stringFromDate:date] : [NSString stringWithFormat:@"%s %s",__DATE__,__TIME__];
+    });
+    return stamp;
+}
+static void TechStyleControls(UIView *view) {
+    if (!view) return;
+    if ([view isKindOfClass:[UISwitch class]]) {
+        UISwitch *toggle=(UISwitch *)view;
+        // Native UISwitch still owns its state, thumb, hit target and animation.
+        CGSize track=toggle.bounds.size;
+        if (track.width<=0 || track.height<=0) track=CGSizeMake(51,31);
+        toggle.onTintColor=[UIColor colorWithPatternImage:TechActionImage(track,1.0)];
+        toggle.thumbTintColor=UIColor.whiteColor;
+        toggle.tintColor=TechLine();
+        // Preserve the native state, targets and accessibility behavior.
+        return; // Do not recolor UIKit's internal switch labels.
+    } else if ([view isKindOfClass:[UILabel class]]) {
+        UILabel *label=(UILabel *)view;
+        label.textColor=TechText();
+    } else if ([view isKindOfClass:[UIButton class]]) {
+        UIButton *button=(UIButton *)view;
+        button.tintColor=TechAccent();
+        [button setTitleColor:TechText() forState:UIControlStateNormal];
+        [button setTitleColor:TechText() forState:UIControlStateHighlighted];
+        [button setTitleColor:TechText() forState:UIControlStateSelected];
+        [button setTitleColor:TechMuted() forState:UIControlStateDisabled];
+        // Keep icon-only actions clear; apply the reference pill to text actions.
+        NSString *title=[button titleForState:UIControlStateNormal] ?: button.currentAttributedTitle.string;
+        if (title.length>0 && CGRectGetWidth(button.bounds)>0 && CGRectGetHeight(button.bounds)>0) {
+            CGSize size=button.bounds.size;
+            [button setBackgroundImage:TechActionImage(size,1.0) forState:UIControlStateNormal];
+            [button setBackgroundImage:TechActionImage(size,0.75) forState:UIControlStateHighlighted];
+            [button setBackgroundImage:TechActionImage(size,1.0) forState:UIControlStateSelected];
+            [button setBackgroundImage:TechActionImage(size,0.35) forState:UIControlStateDisabled];
+        }
+        return;
+    }
+    for (UIView *subview in view.subviews) TechStyleControls(subview);
+}
+static void TechStyleCell(UITableViewCell *cell, UITableView *table, NSIndexPath *path) {
+    if (!cell) return;
+    // Style the full cell background so accessories share the same surface.
+    NSInteger count=(path && table) ? [table numberOfRowsInSection:path.section] : 0;
+    BOOL first=(path && path.row==0), last=(path && path.row==count-1);
+    CACornerMask corners=0;
+    if (first) corners|=kCALayerMinXMinYCorner|kCALayerMaxXMinYCorner;
+    if (last) corners|=kCALayerMinXMaxYCorner|kCALayerMaxXMaxYCorner;
+    cell.backgroundColor=TechBackground();
+    cell.tintColor=TechAccent();
+    cell.contentView.backgroundColor=UIColor.clearColor;
+    cell.contentView.layer.cornerRadius=0;
+    cell.contentView.layer.borderWidth=0;
+    cell.contentView.layer.masksToBounds=NO;
+    if (!cell.backgroundView) cell.backgroundView=[UIView new];
+    if (!cell.selectedBackgroundView) cell.selectedBackgroundView=[UIView new];
+    for (UIView *surface in @[cell.backgroundView,cell.selectedBackgroundView]) {
+        surface.backgroundColor=surface==cell.backgroundView ? TechCard() : TechSelected();
+        surface.layer.cornerRadius=(first || last) ? 16 : 0;
+        surface.layer.maskedCorners=corners;
+        surface.layer.masksToBounds=YES;
+        surface.userInteractionEnabled=NO;
+    }
+    TechStyleControls(cell.contentView);
+    TechStyleControls(cell.accessoryView);
+    if (cell.textLabel) {
+        cell.textLabel.textColor=TechText();
+        cell.textLabel.font=[UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+        cell.textLabel.adjustsFontSizeToFitWidth=YES;
+        cell.textLabel.minimumScaleFactor=0.85;
+    }
+    // Apply secondary color after traversing labels, otherwise it is overwritten.
+    if (cell.detailTextLabel) {
+        cell.detailTextLabel.textColor=TechMuted();
+        cell.detailTextLabel.font=[UIFont systemFontOfSize:13 weight:UIFontWeightRegular];
+    }
+    UIView *divider=[cell.contentView viewWithTag:kTechDividerTag];
+    if (!divider) {
+        divider=[UIView new]; divider.tag=kTechDividerTag;
+        divider.backgroundColor=TechLine();
+        divider.userInteractionEnabled=NO;
+        divider.autoresizingMask=UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+        [cell.contentView addSubview:divider];
+    }
+    divider.hidden=last || count<=1;
+    CGFloat scale=UIScreen.mainScreen.scale;
+    CGFloat hairline=scale>0?1.0/scale:0.5;
+    divider.frame=CGRectMake(18,MAX(0,CGRectGetHeight(cell.contentView.bounds)-hairline),
+                             MAX(0,CGRectGetWidth(cell.contentView.bounds)-36),hairline);
+}
+static UITableViewCell *(*TechOriginalCell)(id,SEL,UITableView *,NSIndexPath *)=NULL;
+static NSString *(*TechOriginalTitle)(id,SEL,UITableView *,NSInteger)=NULL;
+static UITableViewCell *TechCell(id vc,SEL cmd,UITableView *table,NSIndexPath *path) {
+    UITableViewCell *cell=TechOriginalCell?TechOriginalCell(vc,cmd,table,path):nil;
+    TechStyleCell(cell,table,path);
+    return cell;
+}
+static NSString *TechTitle(id vc,SEL cmd,UITableView *table,NSInteger section) {
+    return section==0 ? nil : (TechOriginalTitle?TechOriginalTitle(vc,cmd,table,section):nil);
+}
+static CGFloat TechSectionHeight(id vc,SEL cmd,UITableView *table,NSInteger section) {
+    return section==0 ? 0.01 : 36;
+}
+static void TechInstallCellHooks(Class cls) {
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        Method method=class_getInstanceMethod(cls,@selector(tableView:cellForRowAtIndexPath:));
+        Method title=class_getInstanceMethod(cls,@selector(tableView:titleForHeaderInSection:));
+        if (method) TechOriginalCell=(UITableViewCell *(*)(id,SEL,UITableView *,NSIndexPath *))
+            method_setImplementation(method,(IMP)TechCell);
+        if (title) TechOriginalTitle=(NSString *(*)(id,SEL,UITableView *,NSInteger))
+            method_setImplementation(title,(IMP)TechTitle);
+        class_addMethod(cls,@selector(tableView:heightForHeaderInSection:),
+                        (IMP)TechSectionHeight,"d32@0:8@16q24");
+        NSLog(@"[bluedXHook][TechUI] tjq presentation hooks installed");
+    });
+}
+static void TechHeader(UITableView *table) {
+    UIView *existing=table.tableHeaderView;
+    if (existing.tag==kTechHeaderTag && CGRectGetHeight(existing.frame)<=0.01) return;
+    BOOL legacy=existing && (existing.tag==kTechHeaderTag || existing.tag==kTechFooterTag ||
+        TechContainsSearch(existing) || BearFindTextLabel(existing,@"Blued增强插件") ||
+        BearFindTextLabel(existing,@"2.8.9 Final"));
+    if (existing && !legacy) return;
+    // A minimal spacer suppresses UIKit's automatic header gap.
+    UIView *spacer=[[UIView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(table.bounds),0.01)];
+    spacer.tag=kTechHeaderTag;
+    spacer.backgroundColor=TechBackground();
+    spacer.userInteractionEnabled=NO;
+    table.tableHeaderView=spacer;
+}
+static void TechFooter(UITableView *table) {
+    UIView *existing=table.tableFooterView;
+    if (existing && existing.tag==kTechFooterTag) return;
+    if (existing && existing.subviews.count) return; // preserve unknown original actions
+    CGFloat width=CGRectGetWidth(table.bounds);
+    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,width,96)];
+    footer.tag=kTechFooterTag;
+    footer.backgroundColor=TechBackground();
+    footer.userInteractionEnabled=NO;
+    UIView *line=[[UIView alloc] initWithFrame:CGRectMake(22,12,MAX(0,width-44),0.5)];
+    line.autoresizingMask=UIViewAutoresizingFlexibleWidth;
+    line.backgroundColor=TechLine();
+    [footer addSubview:line];
+    UILabel *version=[[UILabel alloc] initWithFrame:CGRectMake(12,23,width-24,20)];
+    version.autoresizingMask=UIViewAutoresizingFlexibleWidth;
+    version.font=[UIFont monospacedSystemFontOfSize:12 weight:UIFontWeightSemibold];
+    version.text=@"v1.0.0";
+    version.textAlignment=NSTextAlignmentCenter;
+    version.textColor=TechMuted();
+    [footer addSubview:version];
+    UILabel *time=[[UILabel alloc] initWithFrame:CGRectMake(12,45,width-24,19)];
+    time.autoresizingMask=UIViewAutoresizingFlexibleWidth;
+    time.font=[UIFont monospacedDigitSystemFontOfSize:11 weight:UIFontWeightRegular];
+    time.text=TechBuildTime();
+    time.textAlignment=NSTextAlignmentCenter;
+    time.textColor=TechMuted();
+    [footer addSubview:time];
+    table.tableFooterView=footer;
+}
+static void TechNavigation(UIViewController *vc) {
+    UINavigationBar *bar=vc.navigationController.navigationBar;
+    if (!bar) return;
+    if (vc.navigationItem.titleView.tag==kTechFooterTag &&
+        objc_getAssociatedObject(bar,&kTechOriginalBarKey)) return; // Avoid repeated nav layout.
+    if (!objc_getAssociatedObject(bar,&kTechOriginalBarKey)) {
+        objc_setAssociatedObject(bar,&kTechOriginalBarKey,bar.standardAppearance,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalScrollKey,bar.scrollEdgeAppearance ?: (id)NSNull.null,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalCompactKey,bar.compactAppearance ?: (id)NSNull.null,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalTintKey,bar.tintColor,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalBarStyleKey,@(bar.barStyle),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    UINavigationBarAppearance *a=[UINavigationBarAppearance new];
+    [a configureWithOpaqueBackground];
+    a.backgroundColor=TechHeaderTint();
+    a.shadowColor=UIColor.clearColor;
+    a.titleTextAttributes=@{NSForegroundColorAttributeName:TechText()};
+    bar.standardAppearance=a;
+    bar.scrollEdgeAppearance=a;
+    bar.compactAppearance=a;
+    bar.tintColor=TechAccent();
+    bar.barStyle=UIBarStyleDefault;
+    if (vc.navigationItem.titleView.tag!=kTechFooterTag) {
+        UILabel *name=[UILabel new];
+        name.tag=kTechFooterTag;
+        name.accessibilityLabel=@"遇见pro";
+        NSMutableAttributedString *text=[[NSMutableAttributedString alloc] initWithString:@"遇见pro"];
+        [text addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18 weight:UIFontWeightBold],
+            NSForegroundColorAttributeName:TechText()} range:NSMakeRange(0,text.length)];
+        name.attributedText=text;
+        [name sizeToFit];
+        vc.navigationItem.title=@"遇见pro";
+        vc.navigationItem.titleView=name;
+    }
+}
+static void TechRestoreNavigation(UIViewController *vc) {
+    UINavigationBar *bar=vc.navigationController.navigationBar;
+    if (!bar) return;
+    UINavigationBarAppearance *old=objc_getAssociatedObject(bar,&kTechOriginalBarKey);
+    if (old) {
+        bar.standardAppearance=old;
+        id scroll=objc_getAssociatedObject(bar,&kTechOriginalScrollKey);
+        id compact=objc_getAssociatedObject(bar,&kTechOriginalCompactKey);
+        bar.scrollEdgeAppearance=(scroll==NSNull.null ? nil : scroll);
+        bar.compactAppearance=(compact==NSNull.null ? nil : compact);
+        objc_setAssociatedObject(bar,&kTechOriginalBarKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalScrollKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(bar,&kTechOriginalCompactKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    UIColor *tint=objc_getAssociatedObject(bar,&kTechOriginalTintKey);
+    if (tint) bar.tintColor=tint;
+    NSNumber *style=objc_getAssociatedObject(bar,&kTechOriginalBarStyleKey);
+    if (style) bar.barStyle=(UIBarStyle)style.integerValue;
+    objc_setAssociatedObject(bar,&kTechOriginalTintKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(bar,&kTechOriginalBarStyleKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+static void TechApplySettings(UIViewController *vc) {
+    if (!TechIsSettings(vc) || !vc.isViewLoaded) return;
+    UITableView *table=((UITableViewController *)vc).tableView;
+    if (!table) return;
+    TechInstallCellHooks(vc.class);
+    TechNavigation(vc);
+    if (!objc_getAssociatedObject(table,&kTechTableInitializedKey)) {
+        table.overrideUserInterfaceStyle=UIUserInterfaceStyleLight;
+        vc.view.backgroundColor=TechBackground();
+        table.backgroundColor=TechBackground();
+        table.separatorStyle=UITableViewCellSeparatorStyleNone;
+        table.indicatorStyle=UIScrollViewIndicatorStyleBlack;
+        table.rowHeight=56; table.estimatedRowHeight=56;
+        table.sectionHeaderHeight=36; table.estimatedSectionHeaderHeight=0;
+        objc_setAssociatedObject(table,&kTechTableInitializedKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    TechHeader(table);
+    [[table viewWithTag:kBearPluginLabelTag] removeFromSuperview];
+    for (UITableViewCell *cell in table.visibleCells) {
+        TechStyleCell(cell,table,[table indexPathForCell:cell]);
+    }
+    for (NSInteger i=0;i<table.numberOfSections;i++) {
+        UITableViewHeaderFooterView *section=[table headerViewForSection:i];
+        if (!section) continue;
+        if (i==0) { section.hidden=YES; continue; }
+        section.hidden=NO;
+        section.contentView.backgroundColor=TechBackground();
+        section.textLabel.textColor=TechMuted();
+        section.textLabel.font=[UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
+    }
+    TechFooter(table);
+}
+
 // We know the settings class (tjq) because its heOpenTelegram method appears
 // in BluedEnhancer, but hook the UIKit superclass so late class loading is OK.
 %hook UIViewController
@@ -168,13 +536,18 @@ static void BearPlaceCreditNearTelegram(UIViewController *controller) {
               NSStringFromClass(self.class), NSStringFromClass(self.presentingViewController.class));
     }
 #endif
-    if ([NSStringFromClass(self.class) isEqualToString:@"tjq"]) {
+    if (TechIsSettings((UIViewController *)self)) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            BearPlaceCreditNearTelegram((UIViewController *)self);
+            TechApplySettings((UIViewController *)self);
         });
     }
 }
 
+
+- (void)viewWillDisappear:(BOOL)animated {
+    if (TechIsSettings((UIViewController *)self)) TechRestoreNavigation((UIViewController *)self);
+    %orig(animated);
+}
 
 - (void)presentViewController:(UIViewController *)controller animated:(BOOL)animated completion:(void (^)(void))completion {
 #if BEAR_BLOCK_STARTUP_SPLASH
@@ -205,8 +578,8 @@ static void BearPlaceCreditNearTelegram(UIViewController *controller) {
 }
 - (void)viewDidLayoutSubviews {
     %orig;
-    if ([NSStringFromClass(self.class) isEqualToString:@"tjq"]) {
-        BearPlaceCreditNearTelegram((UIViewController *)self);
+    if (TechIsSettings((UIViewController *)self)) {
+        TechApplySettings((UIViewController *)self);
     }
 }
 
@@ -268,6 +641,7 @@ static void BearPlaceCreditNearTelegram(UIViewController *controller) {
 #endif
 
 %ctor {
+    kBearLaunchBeginTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"[bluedXHook] TG area credit hook initialized");
     %init;
 }
