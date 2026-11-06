@@ -718,7 +718,17 @@ static void BearApplyMineEntry(UIView *nav) {
         NSLog(@"[bluedXHook][Entry] replaced original TG control at %@",
               NSStringFromCGRect(oldFrame));
     }
-    entry.frame=oldFrame;
+    // Anchor the plugin entry on the left, aligned with the Settings row.
+    CGRect entryFrame=oldFrame;
+    entryFrame.origin.x=CGRectGetMinX(nav.bounds)+nav.safeAreaInsets.left+16.0;
+    @try {
+        UIView *setting=[nav valueForKey:@"settingBtn"];
+        if ([setting isKindOfClass:[UIView class]] && setting.superview) {
+            CGRect gear=[setting convertRect:setting.bounds toView:nav];
+            entryFrame.origin.y=CGRectGetMidY(gear)-CGRectGetHeight(entryFrame)*0.5;
+        }
+    } @catch (__unused NSException *e) {}
+    entry.frame=entryFrame;
     [nav bringSubviewToFront:entry];
 }
 
