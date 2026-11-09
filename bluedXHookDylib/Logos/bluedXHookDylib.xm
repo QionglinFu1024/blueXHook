@@ -55,13 +55,11 @@ static BOOL BearIsStartupSplash(UIViewController *controller) {
 // our branded LaunchScreen. Keep only the system LaunchScreen visually:
 // suppress the in-process legacy images instead of showing MeetPro twice.
 #define BEAR_REPLACE_INTERNAL_LAUNCH_IMAGE 1
-static CFAbsoluteTime kBearLaunchBeginTime = 0;
-static BOOL BearIsEarlyLaunchAsset(NSString *name) {
+static BOOL BearIsLegacyLaunchAsset(NSString *name) {
 #if BEAR_REPLACE_INTERNAL_LAUNCH_IMAGE
     if (name.length == 0) return NO;
-    // Avoid altering unrelated in-app UI after the initial loading period.
-    if (kBearLaunchBeginTime == 0 ||
-        CFAbsoluteTimeGetCurrent() - kBearLaunchBeginTime > 30.0) return NO;
+    // Match only known launch assets throughout the process lifetime: warm
+    // starts can request these again long after the initial launch finishes.
     return [name isEqualToString:@"launch_screen_new"] ||
            [name isEqualToString:@"launch_light"] ||
            [name isEqualToString:@"launch_dark"];
@@ -72,7 +70,7 @@ static BOOL BearIsEarlyLaunchAsset(NSString *name) {
 
 static UIImage *BearStartupBrandImageForName(NSString *name, NSBundle *bundle) {
     if (bundle != nil && bundle != NSBundle.mainBundle) return nil;
-    if (!BearIsEarlyLaunchAsset(name)) return nil;
+    if (!BearIsLegacyLaunchAsset(name)) return nil;
 
     // Return a valid transparent UIImage rather than nil: nil would let some
     // app code fall back to the original Assets.car and display Blued again.
@@ -944,7 +942,6 @@ static void BearHideLegacySettingsEntry(UIViewController *controller) {
 #endif
 
 %ctor {
-    kBearLaunchBeginTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"[bluedXHook] TG area credit hook initialized");
     %init;
 }
